@@ -5,6 +5,9 @@ import usePartySocket from "partysocket/react";
 import type { Participant } from "@/types/types";
 import Participants from "@/components/Participants";
 import Vote from "@/components/Vote";
+import CopyIcon from "@/assets/copy.svg";
+import Image from "next/image";
+import { toast } from "sonner";
 
 export default function SessionPage({
   params,
@@ -51,6 +54,11 @@ export default function SessionPage({
     ws.send(JSON.stringify({ type: "vote", score }));
   }
 
+  function handleCopyUrl() {
+    navigator.clipboard.writeText(window.location.href);
+    toast("Session URL copied to clipboard!");
+  }
+
   const currentParticipant = participants.find((p) => p.name === name);
 
   if (!hasJoined)
@@ -65,7 +73,7 @@ export default function SessionPage({
         <input
           type="text"
           id="name"
-          className="w-full rounded-md border h-10 border-slate-600 bg-inherit px-4 py-2 placeholder:text-slate-400 placeholder:text-sm placeholder:italic focus:border-orange-600 focus:outline-none"
+          className="bg-slate-50 w-full rounded-md border h-10 border-slate-600 bg-inherit px-4 py-2 placeholder:text-slate-400 placeholder:text-sm placeholder:italic focus:border-orange-600 focus:outline-none"
           name="name"
           value={name}
           placeholder="Enter your name and join the session"
@@ -82,6 +90,13 @@ export default function SessionPage({
 
   return (
     <>
+      <button
+        onClick={handleCopyUrl}
+        className="sm:absolute right-0 top-[2px] w-fit items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-orange-50 border border-orange-600 text-slate-950 hover:bg-orange-100 h-10 px-4 py-2 flex gap-2"
+      >
+        Copy Session URL
+        <Image src={CopyIcon} alt="Copy Icon" width={16} height={16} />
+      </button>
       <p className="my-2 text-lg">
         Welcome
         <span className="text-orange-600 font-bold bg-orange-50 px-2 py-1 rounded-lg mx-1">
