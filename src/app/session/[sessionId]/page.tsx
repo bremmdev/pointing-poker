@@ -54,6 +54,14 @@ export default function SessionPage({
     ws.send(JSON.stringify({ type: "vote", score }));
   }
 
+  function handleClearVotes() {
+    ws.send(JSON.stringify({ type: "clear" }));
+  }
+
+  function handleShowVotes() {
+    ws.send(JSON.stringify({ type: "show" }));
+  }
+
   function handleCopyUrl() {
     navigator.clipboard.writeText(window.location.href);
     toast("Session URL copied to clipboard!");
@@ -81,9 +89,9 @@ export default function SessionPage({
         />
         <button
           disabled={name === ""}
-          className="w-fit items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-orange-400 text-slate-950 hover:bg-orange-400/80 h-10 px-4 py-2 flex gap-2"
+          className="w-fit items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-orange-200 border border-orange-600 text-slate-950 hover:bg-orange-300/70 h-10 px-4 py-2 flex gap-2"
         >
-          Join session
+          Join Session
         </button>
       </form>
     );
@@ -104,7 +112,21 @@ export default function SessionPage({
         </span>
         !
       </p>
-      <div className="bg-orange-50 p-4 rounded-lg border border-orange-600">
+      <div className="bg-orange-50 p-4 rounded-lg border border-orange-600 relative">
+        <div className="mb-4 my-2 sm:my-0 sm:absolute sm:top-2 sm:right-2 flex gap-2">
+          <button
+            onClick={handleShowVotes}
+            className="w-fit items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-orange-500  text-slate-950 hover:bg-orange-500/70 h-10 px-4 py-2 flex gap-2"
+          >
+            Show Votes
+          </button>
+          <button
+            onClick={handleClearVotes}
+            className="w-fit items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-orange-500  text-slate-950 hover:bg-orange-500/70 h-10 px-4 py-2 flex gap-2"
+          >
+            Clear Votes
+          </button>
+        </div>
         <Participants participants={participants} />
         <Vote onVote={handleVote} currScore={currentParticipant?.score} />
       </div>

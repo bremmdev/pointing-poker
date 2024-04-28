@@ -33,6 +33,26 @@ export default class Server implements Party.Server {
         );
       }
     }
+
+    if (data.type === "clear") {
+      this.participants.forEach((p) => (p.score = undefined));
+      this.room.broadcast(
+        JSON.stringify({ type: "sync", participants: this.participants })
+      );
+    }
+
+    if (data.type === "show") {
+      //show the votes and set the score to N/A for participants without a vote
+      this.participants.forEach((p) => {
+        if (p.score === undefined) {
+          p.score = "N/A";
+        }
+      });
+
+      this.room.broadcast(
+        JSON.stringify({ type: "sync", participants: this.participants })
+      );
+    }
   }
 
   onClose(connection: Party.Connection<unknown>): void | Promise<void> {
