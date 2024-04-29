@@ -21,7 +21,6 @@ export default function SessionPage({
   );
 
   const ws = usePartySocket({
-    // usePartySocket takes the same arguments as PartySocket.
     host: process.env.NEXT_PUBLIC_PARTY_HOST || "http://localhost:1999",
     room: params.sessionId,
 
