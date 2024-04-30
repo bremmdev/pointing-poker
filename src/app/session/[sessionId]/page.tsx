@@ -111,8 +111,8 @@ export default function SessionPage({
         </span>
         !
       </p>
-      <div className="bg-orange-50 p-4 rounded-lg border border-orange-600 relative">
-        <div className="mb-4 my-2 sm:my-0 sm:absolute sm:top-2 sm:right-2 flex gap-2">
+      <div className="bg-orange-50 p-10 pt-16 sm:pt-10 rounded-lg border border-orange-600 relative">
+        <div className="absolute left-2 sm:left-auto top-2 sm:right-2 flex gap-2">
           <button
             onClick={handleShowVotes}
             className="w-fit items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-orange-500  text-slate-950 hover:bg-orange-500/70 h-10 px-4 py-2 flex gap-2"

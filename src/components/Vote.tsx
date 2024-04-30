@@ -9,7 +9,7 @@ type Props = {
 
 const Vote = ({ onVote, currScore }: Props) => {
   return (
-    <div className="flex gap-3 flex-wrap my-6 mt-8">
+    <div className="flex gap-3 flex-wrap mb-0 mt-8">
       {VOTE_OPTIONS.map((option) => (
         <button
           onClick={() => onVote(option)}
