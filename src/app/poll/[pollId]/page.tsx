@@ -12,7 +12,7 @@ import { toast } from "sonner";
 export default function SessionPage({
   params,
 }: {
-  params: { sessionId: string };
+  params: { pollId: string };
 }) {
   const [name, setName] = React.useState("");
   const [hasJoined, setHasJoined] = React.useState(false);
@@ -22,7 +22,7 @@ export default function SessionPage({
 
   const ws = usePartySocket({
     host: process.env.NEXT_PUBLIC_PARTY_HOST || "http://localhost:1999",
-    room: params.sessionId,
+    room: params.pollId,
 
     // in addition, you can provide socket lifecycle event handlers
     // (equivalent to using ws.addEventListener in an effect hook)

@@ -14,15 +14,15 @@ const Participants = ({ participants }: Props) => {
       : "There are " + participants.length + " participants in this session.";
 
   const hasResult = participants.every(
-    (p) => p.score !== undefined && p.score !== ""
+    (p) => p.voteAnswer !== undefined && p.voteAnswer !== ""
   );
   //calculate the average if all participants have voted, do not count the '?' vote
   const resultVal = hasResult
     ? participants.reduce((acc, p) => {
-        if (p.score === "?" || p.score === "N/A") return acc;
-        return acc + parseInt(p.score || "0");
+        if (p.voteAnswer === "?" || p.voteAnswer === "N/A") return acc;
+        return acc + parseInt(p.voteAnswer || "0");
       }, 0) /
-      participants.filter((p) => p.score !== "?" && p.score !== "N/A").length
+      participants.filter((p) => p.voteAnswer !== "?" && p.voteAnswer !== "N/A").length
     : 0;
 
   return (
@@ -36,7 +36,7 @@ const Participants = ({ participants }: Props) => {
         </div>
         {participants.map((participant) => (
           <li className="flex gap-4" key={participant.id}>
-            {participant.score && participant.score !== "N/A" && (
+            {participant.voteAnswer && participant.voteAnswer !== "N/A" && (
               <Image
                 src={CheckIcon}
                 alt="Check Icon"
@@ -47,12 +47,12 @@ const Participants = ({ participants }: Props) => {
             )}
             <span className="basis-1/2">{participant.name}</span>
             {!hasResult && <span className="bg-orange-600/80 w-10 h-6"></span>}
-            {participant.score && hasResult && (
+            {participant.voteAnswer && hasResult && (
               <span
                 className="animate-fadeIn"
-                key={`${participant.name}_${participant.score}`}
+                key={`${participant.name}_${participant.voteAnswer}`}
               >
-                {participant.score}
+                {participant.voteAnswer}
               </span>
             )}
           </li>
