@@ -2,9 +2,8 @@
 
 import React from "react";
 import usePartySocket from "partysocket/react";
-import type { Participant } from "@/types/types";
-import Participants from "@/components/Participants";
-import Vote from "@/components/Vote";
+import type { Participant, AnswerOptions } from "@/types/types";
+import PollVote from "@/components/PollVote";
 import CopyIcon from "@/assets/copy.svg";
 import Image from "next/image";
 import { toast } from "sonner";
@@ -19,6 +18,8 @@ export default function SessionPage({
   const [participants, setParticipants] = React.useState<Array<Participant>>(
     []
   );
+  const [question, setQuestion] = React.useState("");
+  const [answerOptions, setAnswerOptions] = React.useState<AnswerOptions>([]);
 
   const ws = usePartySocket({
     host: process.env.NEXT_PUBLIC_PARTY_HOST || "http://localhost:1999",
@@ -26,11 +27,16 @@ export default function SessionPage({
 
     // in addition, you can provide socket lifecycle event handlers
     // (equivalent to using ws.addEventListener in an effect hook)
-    onOpen() {},
+    onOpen(e) {},
     onMessage(e) {
       const msg = JSON.parse(e.data);
       if (msg.type === "sync") {
         setParticipants(msg.participants);
+      }
+
+      if (msg.type === "getPoll") {
+        setQuestion(msg.poll.question);
+        setAnswerOptions(msg.poll.options as AnswerOptions);
       }
     },
     onClose() {},
@@ -53,20 +59,18 @@ export default function SessionPage({
     ws.send(JSON.stringify({ type: "vote", voteAnswer }));
   }
 
-  function handleClearVotes() {
-    ws.send(JSON.stringify({ type: "clear" }));
-  }
-
-  function handleShowVotes() {
-    ws.send(JSON.stringify({ type: "show" }));
-  }
-
   function handleCopyUrl() {
     navigator.clipboard.writeText(window.location.href);
     toast("Session URL copied to clipboard!");
   }
 
   const currentParticipant = participants.find((p) => p.name === name);
+  const participantAmountText =
+    participants.length === 1
+      ? "There is 1 participant in this session."
+      : "There are " + participants.length + " participants in this session.";
+
+  const allAnswers = participants.map((p) => p.voteAnswer);
 
   if (!hasJoined)
     return (
@@ -111,23 +115,17 @@ export default function SessionPage({
         </span>
         !
       </p>
-      <div className="bg-orange-50 p-10 pt-16 sm:pt-10 rounded-lg border border-orange-600 relative">
-        <div className="absolute left-2 sm:left-auto top-2 sm:right-2 flex gap-2">
-          <button
-            onClick={handleShowVotes}
-            className="w-fit items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-orange-500  text-slate-950 hover:bg-orange-500/70 h-10 px-4 py-2 flex gap-2"
-          >
-            Show Votes
-          </button>
-          <button
-            onClick={handleClearVotes}
-            className="w-fit items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-orange-500  text-slate-950 hover:bg-orange-500/70 h-10 px-4 py-2 flex gap-2"
-          >
-            Clear Votes
-          </button>
-        </div>
-        <Participants participants={participants} />
-        <Vote onVote={handleVote} currScore={currentParticipant?.voteAnswer} />
+      <div className="bg-orange-50 p-10 rounded-lg border border-orange-600 relative">
+        <h2 className="text-2xl font-bold text-orange-600 text-center">
+          {question}
+        </h2>
+        <p className="text-center mt-4">{participantAmountText}</p>
+        <PollVote
+          onVote={handleVote}
+          currAnswer={currentParticipant?.voteAnswer}
+          answerOptions={answerOptions}
+          allAnswers={allAnswers}
+        />
       </div>
     </>
   );

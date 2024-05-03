@@ -23,7 +23,6 @@ type Poll = {
   id: string;
   question: string;
   options: Array<Option>;
-  participants: Array<Participant>;
 };
 
 type Message =
@@ -55,7 +54,6 @@ export default class Server implements Party.Server {
   async onRequest(req: Party.Request): Promise<Response> {
     if (req.method === "POST") {
       const data = (await req.json()) as CreatePollRequest;
-      console.log(data);
       if (data.type !== "poll") {
         return new Response("Invalid request", { status: 400 });
       }
@@ -71,16 +69,28 @@ export default class Server implements Party.Server {
         id: data.pollId,
         question: data.data.question,
         options: optionsWithoutQuestion,
-        participants: [],
       };
-
-      console.log(this.poll);
 
       return new Response(JSON.stringify({ pollId: data.pollId }), {
         status: 200,
       });
     }
-    return new Response("OK", { status: 200 });
+    return new Response("Method not allowed", { status: 405 });
+  }
+
+  onConnect(
+    connection: Party.Connection<unknown>,
+    ctx: Party.ConnectionContext
+  ): void | Promise<void> {
+    //send the poll data to the participant
+    if (this.poll) {
+      connection.send(
+        JSON.stringify({
+          type: "getPoll",
+          poll: this.poll,
+        })
+      );
+    }
   }
 
   onMessage(message: string, sender: Party.Connection) {
@@ -90,7 +100,8 @@ export default class Server implements Party.Server {
         id: sender.id,
         name: data.name,
       });
-      //broadcast it to all participants
+
+      //broadcast the updated participants list to all participants
       this.room.broadcast(
         JSON.stringify({ type: "sync", participants: this.participants })
       );
