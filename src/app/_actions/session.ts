@@ -21,23 +21,22 @@ export async function createPoll(formdata: FormData) {
     Object.entries(data).filter(([key, value]) => value !== "")
   );
 
+  const partyURL = process.env.NEXT_PUBLIC_PARTY_HOST
+    ? `https://${process.env.NEXT_PUBLIC_PARTY_HOST}`
+    : "http://localhost:1999";
+
   //create a poll in the server
-  const res = await fetch(
-    `${
-      process.env.NEXT_PUBLIC_PARTY_HOST || "http://localhost:1999"
-    }/party/${pollId}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        type: "poll",
-        pollId,
-        data: filteredData,
-      }),
-    }
-  );
+  const res = await fetch(`${partyURL}/party/${pollId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      type: "poll",
+      pollId,
+      data: filteredData,
+    }),
+  });
 
   if (!res.ok) {
     return { error: "Failed to create poll" };
