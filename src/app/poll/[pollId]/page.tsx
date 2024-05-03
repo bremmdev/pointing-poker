@@ -99,6 +99,9 @@ export default function SessionPage({
       </form>
     );
 
+  if (!question)
+    return <p className="text-rose-600 font-bold">No poll found for this id</p>;
+
   return (
     <>
       <button
