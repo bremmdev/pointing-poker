@@ -1,49 +1,5 @@
 import type * as Party from "partykit/server";
-
-type Participant = {
-  id: string;
-  name: string;
-  voteAnswer?: string;
-};
-
-type Option = {
-  [key: string]: string;
-};
-
-type CreatePollRequest = {
-  type: "poll";
-  pollId: string;
-  data: {
-    question: string;
-    [key: string]: string;
-  };
-};
-
-type Poll = {
-  id: string;
-  question: string;
-  options: Array<Option>;
-};
-
-type Message =
-  | {
-      type: "join";
-      name: string;
-    }
-  | {
-      type: "vote";
-      voteAnswer: string;
-    }
-  | {
-      type: "clear";
-    }
-  | {
-      type: "show";
-    }
-  | {
-      type: "sync";
-      participants: Array<Participant>;
-    };
+import type { CreatePollRequest, Message, Participant, Poll } from "./types";
 
 export default class Server implements Party.Server {
   constructor(readonly room: Party.Room) {}
