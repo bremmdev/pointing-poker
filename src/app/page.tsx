@@ -1,6 +1,6 @@
 import SubmitButton from "@/components/SubmitButton";
 import { createPokerSession, createPoll } from "./_actions/session";
-import Poll from "@/components/Poll";
+import PollMaker from "@/components/PollMaker";
 
 export default function Home() {
   return (
@@ -20,7 +20,7 @@ export default function Home() {
         </form>
       </section>
 
-      <Poll />
+      <PollMaker />
     </>
   );
 }

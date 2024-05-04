@@ -31,22 +31,11 @@ export default class Server implements Party.Server {
         status: 200,
       });
     }
-    return new Response("Method not allowed", { status: 405 });
-  }
-
-  onConnect(
-    connection: Party.Connection<unknown>,
-    ctx: Party.ConnectionContext
-  ): void | Promise<void> {
-    //send the poll data to the participant
+    //return the poll data if the  if (req.method === "GET") {
     if (this.poll) {
-      connection.send(
-        JSON.stringify({
-          type: "getPoll",
-          poll: this.poll,
-        })
-      );
+      return new Response(JSON.stringify(this.poll), { status: 200 });
     }
+    return new Response("Poll not found", { status: 404 });
   }
 
   onMessage(message: string, sender: Party.Connection) {
